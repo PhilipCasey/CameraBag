@@ -39,17 +39,15 @@ struct EquipmentRowViewDetail: View {
             .font(.subheadline)
             Spacer()
             HStack(alignment: .center, spacing: 20) {
-
-                Button(action: /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/, label: {
-                    Text("Edit")
-                })
-                
                 Button {
                     copyToClipboard()
                 } label: {
                     Label(buttonText, systemImage: "doc.on.doc.fill")
                 }
                 
+                Button(action: /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/, label: {
+                    Text("Edit")
+                })
             }
         }
     }
