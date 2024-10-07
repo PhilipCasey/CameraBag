@@ -10,6 +10,7 @@ import SwiftUI
 struct EquipmentRowViewDetail: View {
     var equipment: PhotoItem
     @State private var buttonText: String = "Serial"
+    var buttonEdit: String = "Edit"
     private let pasteboard = UIPasteboard.general
     
     func copyToClipboard() {
@@ -45,9 +46,12 @@ struct EquipmentRowViewDetail: View {
                     Label(buttonText, systemImage: "doc.on.doc.fill")
                 }
                 
-                Button(action: /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/, label: {
-                    Text("Edit")
-                })
+                Button {
+                    
+                } label: {
+                    Label(buttonEdit, systemImage: "slider.horizontal.3")
+                }
+
             }
         }
     }
