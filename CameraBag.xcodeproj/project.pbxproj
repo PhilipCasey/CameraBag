@@ -6,8 +6,15 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		A609047F2CE43FB9003A213F /* GearItem+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = A609047E2CE43FB9003A213F /* GearItem+CoreDataProperties.swift */; };
+		A60904802CE43FB9003A213F /* GearItem+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = A609047D2CE43FB9003A213F /* GearItem+CoreDataClass.swift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		A609045B2CE43927003A213F /* CameraBag.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CameraBag.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A609047D2CE43FB9003A213F /* GearItem+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "GearItem+CoreDataClass.swift"; path = "CameraBag/GearItem+CoreDataClass.swift"; sourceTree = "<group>"; };
+		A609047E2CE43FB9003A213F /* GearItem+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "GearItem+CoreDataProperties.swift"; path = "CameraBag/GearItem+CoreDataProperties.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -32,6 +39,8 @@
 		A60904522CE43927003A213F = {
 			isa = PBXGroup;
 			children = (
+				A609047D2CE43FB9003A213F /* GearItem+CoreDataClass.swift */,
+				A609047E2CE43FB9003A213F /* GearItem+CoreDataProperties.swift */,
 				A609045D2CE43927003A213F /* CameraBag */,
 				A609045C2CE43927003A213F /* Products */,
 			);
@@ -119,6 +128,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A609047F2CE43FB9003A213F /* GearItem+CoreDataProperties.swift in Sources */,
+				A60904802CE43FB9003A213F /* GearItem+CoreDataClass.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
