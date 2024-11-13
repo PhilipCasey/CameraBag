@@ -17,7 +17,6 @@ extension GearItem {
     }
 
     @NSManaged public var id: UUID?
-    @NSManaged public var type: String?
     @NSManaged public var brand: String?
     @NSManaged public var model: String?
     @NSManaged public var serialNumber: String?

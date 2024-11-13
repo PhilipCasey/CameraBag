@@ -4,27 +4,65 @@
 //
 //  Created by Philip Casey on 11/12/24.
 //
-
 import Foundation
+import CoreData
+import Combine
 
 class GearItemViewModel: ObservableObject {
-    @Published var type = ""
-    @Published var brand = ""
-    @Published var model = ""
-    @Published var serialNumber = ""
-    @Published var purchaseDate = Date()
-    @Published var purchaseAmount: Double = 0.0
-    @Published var category = ""
+    @Published var gearItems: [GearItem] = []
+    private let viewContext: NSManagedObjectContext
 
-    init(gearItem: GearItem? = nil) {
-        if let gearItem = gearItem {
-            self.type = gearItem.type ?? ""
-            self.brand = gearItem.brand ?? ""
-            self.model = gearItem.model ?? ""
-            self.serialNumber = gearItem.serialNumber ?? ""
-            self.purchaseDate = gearItem.purchaseDate ?? Date()
-            self.purchaseAmount = gearItem.purchaseAmount
-            self.category = gearItem.category ?? ""
+    init(viewContext: NSManagedObjectContext) {
+        self.viewContext = viewContext
+        fetchItems()
+    }
+
+    func saveItem(_ item: GearItem) {
+        do {
+            try viewContext.save()
+            fetchItems()
+            print("Saved item: \(item)")
+        } catch {
+            print("Failed to save item: \(error)")
+        }
+    }
+
+    func fetchItems() {
+        let request: NSFetchRequest<GearItem> = GearItem.fetchRequest()
+        request.sortDescriptors = [NSSortDescriptor(keyPath: \GearItem.brand, ascending: true)]
+
+        do {
+            gearItems = try viewContext.fetch(request)
+            print("Fetched items: \(gearItems)")
+        } catch {
+            print("Failed to fetch gear items: \(error)")
+        }
+    }
+
+    func addItem(brand: String, model: String, serialNumber: String, purchaseDate: Date, purchaseAmount: Double, category: String) {
+        let newItem = GearItem(context: viewContext)
+        newItem.id = UUID()
+        newItem.brand = brand
+        newItem.model = model
+        newItem.serialNumber = serialNumber
+        newItem.purchaseDate = purchaseDate
+        newItem.purchaseAmount = purchaseAmount
+        newItem.category = category
+
+        saveItem(newItem)
+    }
+
+    func deleteItem(_ item: GearItem) {
+        viewContext.delete(item)
+        saveContext()
+    }
+
+    private func saveContext() {
+        do {
+            try viewContext.save()
+            fetchItems()  // Refresh items after deleting
+        } catch {
+            print("Failed to save context after delete: \(error)")
         }
     }
 }

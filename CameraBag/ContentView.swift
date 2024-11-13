@@ -9,33 +9,35 @@ import CoreData
 
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
-
-    // Fetches `GearItem` objects from Core Data
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \GearItem.brand, ascending: true)],
-        animation: .default)
-    private var gearItems: FetchedResults<GearItem>
-
-    @State private var isAddEditSheetPresented = false
+    @StateObject private var viewModel = GearItemViewModel(viewContext: PersistenceController.shared.container.viewContext)
     @State private var selectedGearItem: GearItem?
+    @State private var isAddEditSheetPresented = false
+    @State private var refreshID = UUID()
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             List {
-                ForEach(gearItems) { item in
-                    VStack(alignment: .leading) {
-                        Text("Brand: \(item.brand ?? "Unknown")")
-                        Text("Model: \(item.model ?? "Unknown")")
-                            .font(.subheadline)
-                            .foregroundColor(.gray)
-                    }
-                    .onTapGesture {
-                        selectedGearItem = item
-                        isAddEditSheetPresented = true
+                ForEach(["Cameras", "Lenses", "Flashes & Lights", "Accessories"], id: \.self) { category in
+                    let categoryItems = viewModel.gearItems.filter { $0.category == category }
+
+                    if !categoryItems.isEmpty {
+                        Section(header: Text(category)) {
+                            ForEach(categoryItems) { item in
+                                NavigationLink(value: item) {
+                                    VStack(alignment: .leading) {
+                                        Text(item.brand ?? "Unknown")
+                                            .font(.headline)
+                                        Text(item.model ?? "Unknown")
+                                            .font(.subheadline)
+                                            .foregroundColor(.gray)
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
-                .onDelete(perform: deleteItems)
             }
+            .id(refreshID)  // Force a new view instance to reload UI
             .navigationTitle("Camera Bag")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -47,24 +49,23 @@ struct ContentView: View {
                     }
                 }
             }
-            .sheet(isPresented: $isAddEditSheetPresented) {
+            .sheet(isPresented: $isAddEditSheetPresented, onDismiss: {
+                refreshData()
+            }) {
                 AddEditGearView(gearItem: selectedGearItem)
+            }
+            .navigationDestination(for: GearItem.self) { item in
+                GearDetailView(gearItem: item)
+            }
+            .onAppear {
+                refreshData()  // Initial fetch when view appears
             }
         }
     }
 
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            offsets.map { gearItems[$0] }.forEach(viewContext.delete)
-            saveContext()
-        }
-    }
-
-    private func saveContext() {
-        do {
-            try viewContext.save()
-        } catch {
-            print("Failed to save context: \(error)")
-        }
+    // Function to force refresh items and reset the view
+    private func refreshData() {
+        viewModel.fetchItems()  // Fetch latest data
+        refreshID = UUID()  // Force view reload by changing the ID
     }
 }

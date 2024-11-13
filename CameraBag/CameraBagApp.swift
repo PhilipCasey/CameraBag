@@ -13,7 +13,7 @@ struct CameraBagApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView() // No arguments needed
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
         }
     }
