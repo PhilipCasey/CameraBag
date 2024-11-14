@@ -5,6 +5,7 @@
 //  Created by Philip Casey on 11/13/24.
 //
 import SwiftUI
+import CoreData
 
 struct GearDetailView: View {
     @Environment(\.managedObjectContext) private var viewContext
@@ -17,15 +18,45 @@ struct GearDetailView: View {
     var body: some View {
         Form {
             Section(header: Text("Details")) {
-                Text("Brand: \(gearItem.brand ?? "Unknown")")
-                Text("Model: \(gearItem.model ?? "Unknown")")
-                Text("Serial Number: \(gearItem.serialNumber ?? "N/A")")
-                Text("Purchase Date: \(gearItem.purchaseDate ?? Date(), formatter: DateFormatter.shortDate)")
-                Text("Purchase Amount: \(gearItem.purchaseAmount, format: .currency(code: "USD"))")
-                Text("Category: \(gearItem.category ?? "Unknown")")
+                HStack {
+                    Text("Brand:")
+                        .fontWeight(.semibold)
+                    Spacer()
+                    Text(gearItem.brand ?? "Unknown")
+                }
+                HStack {
+                    Text("Model:")
+                        .fontWeight(.semibold)
+                    Spacer()
+                    Text(gearItem.model ?? "Unknown")
+                }
+                HStack {
+                    Text("Serial Number:")
+                        .fontWeight(.semibold)
+                    Spacer()
+                    Text(gearItem.serialNumber ?? "N/A")
+                }
+                HStack {
+                    Text("Purchase Date:")
+                        .fontWeight(.semibold)
+                    Spacer()
+                    Text(gearItem.purchaseDate ?? Date(), formatter: DateFormatter.shortDate)
+                }
+                HStack {
+                    Text("Purchase Amount:")
+                        .fontWeight(.semibold)
+                    Spacer()
+                    Text(gearItem.purchaseAmount, format: .currency(code: "USD"))
+                }
+                HStack {
+                    Text("Category:")
+                        .fontWeight(.semibold)
+                    Spacer()
+                    Text(gearItem.category ?? "Unknown")
+                }
             }
         }
-        .navigationTitle("Gear Details")
+        .navigationTitle(gearItem.model ?? "Gear")
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button("Edit") {
@@ -33,19 +64,8 @@ struct GearDetailView: View {
                 }
             }
         }
-        .sheet(isPresented: $isEditPresented, onDismiss: {
-            refreshGearItem()
-        }) {
-            AddEditGearView(gearItem: gearItem)
-        }
-    }
-
-    private func refreshGearItem() {
-        do {
-            try viewContext.save()
-            viewContext.refresh(gearItem, mergeChanges: true)
-        } catch {
-            print("Failed to refresh gear item: \(error)")
+        .sheet(isPresented: $isEditPresented) {
+            AddEditGearView(gearItem: gearItem) // Pass gearItem to AddEditGearView
         }
     }
 }
